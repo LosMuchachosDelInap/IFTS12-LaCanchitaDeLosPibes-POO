@@ -1,12 +1,12 @@
 <?php
 class Usuario {
-    private $id;
+    private $id_usuario;
     private $email;
     private $clave;
     private $id_persona;
 
-    public function __construct($email, $clave, $id_persona, $id = null, $hash = true) {
-        $this->id = $id;
+    public function __construct($email, $clave, $id_persona, $id_usuario = null, $hash = true) {
+        $this->id_usuario = $id_usuario;
         $this->email = $email;
         // Si $hash es true, hashea la clave (para nuevos usuarios); si es false, la clave ya viene hasheada desde la BD
         $this->clave = $hash ? password_hash($clave, PASSWORD_DEFAULT) : $clave;
@@ -14,7 +14,7 @@ class Usuario {
     }
 
     // Getters
-    public function getId() { return $this->id; }
+    public function getId() { return $this->id_usuario; }
     public function getEmail() { return $this->email; }
     public function getClave() { return $this->clave; }
     public function getIdPersona() { return $this->id_persona; }
@@ -26,10 +26,10 @@ class Usuario {
 
     // Guardar usuario en la base de datos
     public function guardar($conn) {
-        $stmt = $conn->prepare("INSERT INTO usuarios (email, clave, id_persona) VALUES (?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO usuario (email, clave, id_persona) VALUES (?, ?, ?)");
         $stmt->bind_param("ssi", $this->email, $this->clave, $this->id_persona);
         if ($stmt->execute()) {
-            $this->id = $conn->insert_id;
+            $this->id_usuario = $conn->insert_id;
             return true;
         }
         return false;
@@ -37,13 +37,13 @@ class Usuario {
 
     // Buscar usuario por ID
     public static function buscarPorId($conn, $id) {
-        $stmt = $conn->prepare("SELECT * FROM usuarios WHERE id = ?");
+        $stmt = $conn->prepare("SELECT * FROM usuario WHERE id_usuario = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $resultado = $stmt->get_result();
         if ($fila = $resultado->fetch_assoc()) {
             // $hash = false porque la clave ya viene hasheada de la BD
-            return new Usuario($fila['email'], $fila['clave'], $fila['id_persona'], $fila['id'], false);
+            return new Usuario($fila['email'], $fila['clave'], $fila['id_persona'], $fila['id_usuario'], false);
         }
         return null;
     }
@@ -54,14 +54,14 @@ class Usuario {
     }
 
     public function actualizar($conn) {
-        $stmt = $conn->prepare("UPDATE usuarios SET email = ?, clave = ?, id_persona = ? WHERE id = ?");
-        $stmt->bind_param("ssii", $this->email, $this->clave, $this->id_persona, $this->id);
+        $stmt = $conn->prepare("UPDATE usuario SET email = ?, clave = ?, id_persona = ? WHERE id_usuario = ?");
+        $stmt->bind_param("ssii", $this->email, $this->clave, $this->id_persona, $this->id_usuario);
         return $stmt->execute();
     }
 
     public function eliminar($conn) {
-        $stmt = $conn->prepare("DELETE FROM usuarios WHERE id = ?");
-        $stmt->bind_param("i", $this->id);
+        $stmt = $conn->prepare("DELETE FROM usuario WHERE id_usuario = ?");
+        $stmt->bind_param("i", $this->id_usuario);
         return $stmt->execute();
     }
 }

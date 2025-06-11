@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $conn = (new ConectionDB())->getConnection();
 
     // Validar que el email no exista
-    $stmt = $conn->prepare("SELECT id FROM usuarios WHERE email = ?");
+    $stmt = $conn->prepare("SELECT id_usuario FROM usuario WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $stmt->store_result();

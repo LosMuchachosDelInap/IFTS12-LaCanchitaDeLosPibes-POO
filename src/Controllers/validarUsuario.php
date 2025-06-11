@@ -23,26 +23,28 @@ require_once __DIR__ . '/../ConectionBD/CConection.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
     $clave = $_POST['clave'] ?? '';
-
+    $rol = $_POST['rol'] ?? '';
     $conn = (new ConectionDB())->getConnection();
 
     // Buscar usuario por email
-    $stmt = $conn->prepare("SELECT * FROM usuarios WHERE email = ?");
+    $stmt = $conn->prepare("SELECT * FROM usuario WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $resultado = $stmt->get_result();
 
     if ($fila = $resultado->fetch_assoc()) {
-        $usuario = new Usuario($fila['email'], $fila['clave'], $fila['id_persona'], $fila['id'], false);
+        $usuario = new Usuario($fila['email'], $fila['clave'], $fila['id_persona'], $fila['id_usuario'], false);
 
         // Verificar la clave usando el método de la clase
         if ($usuario->verificarClave($clave)) {
             // Login correcto: guardar datos en sesión
-            $_SESSION['usuario_id'] = $usuario->getId();
+            $_SESSION['id_usuario'] = $usuario->getId();
             $_SESSION['email'] = $usuario->getEmail();
-            // Puedes guardar más datos si lo necesitas
+          // $_SESSION['id_rol'] = $usuario->getRol(); // Asumiendo que tienes un método getRol() en la clase Usuario
+            $_SESSION['logged_in'] = true; // Marca al usuario como logueado
+                // Puedes guardar más datos si lo necesitas
 
-            header("Location: " . $_SERVER['HTTP_REFERER']);
+                header("Location: " . $_SERVER['HTTP_REFERER']);
             exit;
         }
     }

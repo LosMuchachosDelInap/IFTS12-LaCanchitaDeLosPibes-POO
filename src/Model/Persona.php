@@ -29,7 +29,7 @@ class Persona {
 
     // Guardar persona en la base de datos
     public function guardar($conn) {
-        $stmt = $conn->prepare("INSERT INTO personas (nombre, apellido, dni, telefono) VALUES (?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO persona (nombre, apellido, dni, telefono) VALUES (?, ?, ?, ?)");
         $stmt->bind_param("ssss", $this->nombre, $this->apellido, $this->dni, $this->telefono);
         if ($stmt->execute()) {
             $this->id = $conn->insert_id;
@@ -40,7 +40,7 @@ class Persona {
 
     // Buscar persona por ID
     public static function buscarPorId($conn, $id) {
-        $stmt = $conn->prepare("SELECT * FROM personas WHERE id = ?");
+        $stmt = $conn->prepare("SELECT * FROM persona WHERE id = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $resultado = $stmt->get_result();
@@ -51,13 +51,13 @@ class Persona {
     }
 
     public function actualizar($conn) {
-        $stmt = $conn->prepare("UPDATE personas SET nombre = ?, apellido = ?, dni = ?, telefono = ? WHERE id = ?");
+        $stmt = $conn->prepare("UPDATE persona SET nombre = ?, apellido = ?, dni = ?, telefono = ? WHERE id = ?");
         $stmt->bind_param("ssssi", $this->nombre, $this->apellido, $this->dni, $this->telefono, $this->id);
         return $stmt->execute();
     }
 
     public function eliminar($conn) {
-        $stmt = $conn->prepare("DELETE FROM personas WHERE id = ?");
+        $stmt = $conn->prepare("DELETE FROM persona WHERE id = ?");
         $stmt->bind_param("i", $this->id);
         return $stmt->execute();
     }
