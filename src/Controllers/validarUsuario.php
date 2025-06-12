@@ -18,33 +18,39 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 require_once __DIR__ . '/../Model/Usuario.php';
+require_once __DIR__ . '/../Model/Empleado.php';
 require_once __DIR__ . '/../ConectionBD/CConection.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = $_POST['email'] ?? '';
-    $clave = $_POST['clave'] ?? '';
-    $rol = $_POST['rol'] ?? '';
+    //   $email = $_POST['email'] ?? '';
+    //   $clave = $_POST['clave'] ?? '';
+    $email = trim($_POST['email'] ?? null);
+    $clave = trim($_POST['clave'] ?? null);
     $conn = (new ConectionDB())->getConnection();
 
     // Buscar usuario por email
-    $stmt = $conn->prepare("SELECT * FROM usuario WHERE email = ?");
+    $stmt = $conn->prepare("SELECT u.email, u.clave, u.id_usuario, u.id_persona, e.id_rol, r.rol
+        FROM usuario u
+        JOIN empleado e ON u.id_usuario = e.id_usuario
+        JOIN roles r ON e.id_rol = r.id_roles
+        WHERE u.email = ? AND u.habilitado = 1 AND u.cancelado = 0");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $resultado = $stmt->get_result();
 
     if ($fila = $resultado->fetch_assoc()) {
-        $usuario = new Usuario($fila['email'], $fila['clave'], $fila['id_persona'], $fila['id_usuario'], false);
+        $usuarioObj = new Usuario($fila['email'], $fila['clave'], $fila['id_persona'], $fila['id_usuario'], false);
 
         // Verificar la clave usando el método de la clase
-        if ($usuario->verificarClave($clave)) {
+        if ($usuarioObj->verificarClave($clave)) {
             // Login correcto: guardar datos en sesión
-            $_SESSION['id_usuario'] = $usuario->getId();
-            $_SESSION['email'] = $usuario->getEmail();
-          // $_SESSION['id_rol'] = $usuario->getRol(); // Asumiendo que tienes un método getRol() en la clase Usuario
-            $_SESSION['logged_in'] = true; // Marca al usuario como logueado
-                // Puedes guardar más datos si lo necesitas
+            $_SESSION['email'] = $fila['email'];
+            $_SESSION['logged_in'] = true;
+            $_SESSION['id_usuario'] = $fila['id_usuario'];
+            $_SESSION['id_rol'] = $fila['id_rol'];
+            $_SESSION['nombre_rol'] = $fila['rol'];
 
-                header("Location: " . $_SERVER['HTTP_REFERER']);
+            header("Location: " . BASE_URL . "/src/Views/listado.php");
             exit;
         }
     }

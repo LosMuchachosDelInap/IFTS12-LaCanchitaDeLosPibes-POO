@@ -6,7 +6,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form method="post" action="<?php echo BASE_URL; ?>/src/Controllers/contacto.php"> <!-- para usar en casa -->
+        <form method="post" action="<?php echo BASE_URL; ?>/src/Controllers/contactoController.php"> <!-- para usar en casa -->
        <!-- <form method="post" action="/Mis%20proyectos/IFTS12-LaCanchitaDeLosPibes/src/Controllers/contacto.php"> --><!-- para usar en EL TRABAJO -->
           <div id="contacto-mensaje"></div>
           <div class="mb-3">
@@ -32,7 +32,7 @@
           </div>
           <div class="mb-3">
             <label for="consulta" class="col-form-label text-dark text-start">Escribanos su cansulta:</label>
-            <textarea name="contacto" class="form-control" id="consulta"></textarea>
+            <textarea name="mensaje" class="form-control" id="consulta"></textarea>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
