@@ -13,7 +13,7 @@ class Empleado {
     }
 
     // Getters
-    public function getId() { return $this->id_empleado; }
+    public function getIdEmpleado() { return $this->id_empleado; }
     public function getIdRol() { return $this->id_rol; }
     public function getIdPersona() { return $this->id_persona; }
     public function getIdUsuario() { return $this->id_usuario; }

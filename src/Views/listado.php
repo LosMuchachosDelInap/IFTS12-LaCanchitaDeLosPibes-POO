@@ -174,7 +174,7 @@ if ($rol !== 'Administrador' && $rol !== 'Dueño') {
                       <td><?php echo $row["telefono"]; ?></td>
                       <td><?php echo $row["rol"]; ?></td>
                       <td>
-                        <a class="btn btn-primary" href="<?php echo BASE_URL; ?>/src/Controllers/modificarEmpleado.php?id_empleado=<?php echo $row["id_empleado"]; ?>"><i class="bi bi-pencil-square"></i></a>
+                        <a class="btn btn-primary" href="<?php echo BASE_URL; ?>/src/Views/modificar.php?id_empleado=<?php echo $row["id_empleado"]; ?>"><i class="bi bi-pencil-square"></i></a>
                         <a class="btn btn-danger" href="<?php echo BASE_URL; ?>/src/Controllers/eliminarEmpleado.php?id_empleado=<?php echo $row["id_empleado"]; ?>"><i class="bi bi-trash3-fill"></i></a>
                       </td>
                     </tr>
