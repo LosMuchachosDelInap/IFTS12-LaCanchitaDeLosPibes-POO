@@ -50,16 +50,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['id_rol'] = $fila['id_rol'];
             $_SESSION['nombre_rol'] = $fila['rol'];
 
-            header("Location: " . BASE_URL . "/src/Views/listado.php");
-            exit;
+            // Redirección según el rol
+            if (strtolower($fila['rol']) === 'cliente') {
+                header("Location: " . BASE_URL . "/src/Views/reservarCancha.php");
+                exit;
+            } else {
+                header("Location: " . BASE_URL . "/src/Views/listado.php");
+                exit;
+            }
         }
-    }
 
-    // Si llegó aquí, login incorrecto
-    $_SESSION['error_message'] = "Usuario o contraseña incorrectos.";
-    header("Location: " . $_SERVER['HTTP_REFERER']);
-    exit;
-} else {
-    header("Location: ../../index.php");
-    exit;
+        // Si llegó aquí, login incorrecto
+        $_SESSION['error_message'] = "Usuario o contraseña incorrectos.";
+        header("Location: " . $_SERVER['HTTP_REFERER']);
+        exit;
+    } else {
+        header("Location: ../../index.php");
+        exit;
+    }
 }
