@@ -222,3 +222,12 @@ li {
   color: #666 !important;
   cursor: not-allowed;
 }
+
+/* Mensaje flash que desaparece */
+#mensaje-flash {
+  transition: opacity 0.5s;
+}
+#mensaje-flash.oculto {
+  opacity: 0;
+  pointer-events: none;
+}

@@ -52,6 +52,16 @@ if ($rol !== 'Administrador' && $rol !== 'Dueño') {
   <div class="centrar">
     <div class="mt-5 card col-10">
       <h5 class="card-header">
+        <!-- Mensaje de Eliminar usuario con exito
+         * Si hay un mensaje en la sesión, lo muestra
+         * y luego lo desaparece solo
+         */-->
+        <?php if (isset($_SESSION['mensaje'])): ?>
+          <div class="alert alert-success" id="mensaje-flash">
+            <?= htmlspecialchars($_SESSION['mensaje'], ENT_QUOTES, 'UTF-8'); ?>
+          </div>
+        <?php unset($_SESSION['mensaje']);
+        endif; ?>
         Usuario: <?php echo htmlspecialchars($_SESSION['email'], ENT_QUOTES, 'UTF-8'); ?> |
         Rol: <?php echo htmlspecialchars($_SESSION['nombre_rol'], ENT_QUOTES, 'UTF-8'); ?>
       </h5>

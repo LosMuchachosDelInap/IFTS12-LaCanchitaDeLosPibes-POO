@@ -3,6 +3,14 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+// Definir BASE_URL si no está definida
+if (!defined('BASE_URL')) {
+    $protocolo = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
+    $host = $_SERVER['HTTP_HOST'];
+    $carpeta = ''; // Ajusta si usas subcarpeta
+    define('BASE_URL', $protocolo . $host . $carpeta);
+}
+
 // Verifica si la sesión ya ha sido iniciada
 if (session_status() === PHP_SESSION_NONE) { 
     session_start();
@@ -60,11 +68,15 @@ $idEmpleado = $_GET['id_empleado'] ?? $_POST['id_empleado'] ?? null;
 
 if ($idEmpleado) {
     if ($eliminador->deshabilitarPorId($idEmpleado)) {
-        echo "<script>alert('Empleado eliminado con éxito'); window.location='listado.php';</script>";
+        $_SESSION['mensaje'] = 'Empleado eliminado con éxito';
     } else {
-        echo "<script>alert('Error al eliminar empleado'); window.location='listado.php';</script>";
+        $_SESSION['mensaje'] = 'Error al eliminar empleado';
     }
+    header('Location: ' . BASE_URL . '/src/Views/listado.php');
+    exit;
 } else {
-    echo "<script>alert('ID de empleado no especificado'); window.location='listado.php';</script>";
+    $_SESSION['mensaje'] = 'ID de empleado no especificado';
+    header('Location: ' . BASE_URL . '/src/Views/listado.php');
+    exit;
 }
 ?>
