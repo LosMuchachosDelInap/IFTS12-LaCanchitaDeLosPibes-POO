@@ -69,8 +69,8 @@ class Persona
     // Guardar persona en la base de datos
     public function guardar($conn)
     {
-        $stmt = $conn->prepare("INSERT INTO persona (nombre, apellido, edad, dni, telefono) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("ssss", $this->nombre, $this->apellido, $this->dni, $this->edad, $this->telefono);
+        $stmt = $conn->prepare("INSERT INTO persona (nombre, apellido, edad, dni, telefono) VALUES (?, ?, ?, ?,?)");
+        $stmt->bind_param("sssss", $this->nombre, $this->apellido, $this->dni, $this->edad, $this->telefono);
         if ($stmt->execute()) {
             $this->id_persona = $conn->insert_id;
             return true;
