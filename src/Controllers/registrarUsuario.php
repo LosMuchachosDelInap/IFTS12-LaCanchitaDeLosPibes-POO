@@ -15,7 +15,11 @@ require_once __DIR__ . '/../ConectionBD/CConection.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre   = $_POST['nombre'] ?? '';
     $apellido = $_POST['apellido'] ?? '';
+<<<<<<< HEAD
     $edad      = $_POST['edad'] ?? '';
+=======
+    $edad     = $_POST['clave'] ?? '';
+>>>>>>> eac68ca8476c034ff867eee8921bda9654fe6141
     $dni      = $_POST['dni'] ?? '';
     $telefono = $_POST['telefono'] ?? '';
     $email    = $_POST['email'] ?? '';
@@ -36,7 +40,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Crear persona
+<<<<<<< HEAD
     $persona = new Persona($nombre, $apellido, $edad, $dni, $telefono);
+=======
+  $persona = new Persona($nombre, $apellido, $edad, $dni, $telefono);
+>>>>>>> eac68ca8476c034ff867eee8921bda9654fe6141
     if (!$persona->guardar($conn)) {
         $_SESSION['registro_message'] = "Error al registrar persona.";
         header("Location: " . $_SERVER['HTTP_REFERER']);
