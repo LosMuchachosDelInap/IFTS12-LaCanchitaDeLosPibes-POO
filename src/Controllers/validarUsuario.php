@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['id_rol'] = $fila['id_rol'];
             $_SESSION['nombre_rol'] = $fila['rol'];
 
-            header("Location: " . BASE_URL . "/src/Views/listado.php");
+            header("Location: " . BASE_URL . "/index.php");
             exit;
         }
     }
