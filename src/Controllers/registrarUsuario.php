@@ -15,16 +15,12 @@ require_once __DIR__ . '/../ConectionBD/CConection.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre   = $_POST['nombre'] ?? '';
     $apellido = $_POST['apellido'] ?? '';
-<<<<<<< HEAD
-    $edad      = $_POST['edad'] ?? '';
-=======
-    $edad     = $_POST['clave'] ?? '';
->>>>>>> eac68ca8476c034ff867eee8921bda9654fe6141
+    $edad     = $_POST['edad'] ?? '';
     $dni      = $_POST['dni'] ?? '';
     $telefono = $_POST['telefono'] ?? '';
     $email    = $_POST['email'] ?? '';
     $clave    = $_POST['clave'] ?? '';
-    $rol      = $_POST['rol'] ?? 6;
+    $rol      = $_POST['rol'] ?? 6; // Por defecto, rol 6 (Cliente)
 
     $conn = (new ConectionDB())->getConnection();
 
@@ -38,13 +34,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: " . $_SERVER['HTTP_REFERER']);
         exit;
     }
+    $stmt->close();
 
     // Crear persona
-<<<<<<< HEAD
     $persona = new Persona($nombre, $apellido, $edad, $dni, $telefono);
-=======
-  $persona = new Persona($nombre, $apellido, $edad, $dni, $telefono);
->>>>>>> eac68ca8476c034ff867eee8921bda9654fe6141
     if (!$persona->guardar($conn)) {
         $_SESSION['registro_message'] = "Error al registrar persona.";
         header("Location: " . $_SERVER['HTTP_REFERER']);
@@ -59,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Crear empleado
+    // Crear empleado (si corresponde)
     $empleado = new Empleado($rol, $persona->getId(), $usuario->getId());
     if (!$empleado->guardar($conn)) {
         $_SESSION['registro_message'] = "Error al registrar empleado.";
