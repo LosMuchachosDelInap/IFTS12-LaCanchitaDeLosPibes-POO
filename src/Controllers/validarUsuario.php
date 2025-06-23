@@ -11,7 +11,6 @@ if (!defined('BASE_URL')) {
     $carpeta = ''; // SIN subcarpeta// POR PHP - s LOCALHOST:8000
     //$carpeta = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
     define('BASE_URL', $protocolo . $host . $carpeta);
-}
 // Inicia la sesión antes de cualquier salida
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -50,15 +49,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['id_rol'] = $fila['id_rol'];
             $_SESSION['nombre_rol'] = $fila['rol'];
 
-            // Redirección según el rol
-            if (strtolower($fila['rol']) === 'cliente') {
-                header("Location: " . BASE_URL . "/src/Views/reservarCancha.php");
-                exit;
-            } else {
-                header("Location: " . BASE_URL . "/src/Views/listado.php");
-                exit;
-            }
+            header("Location: " . BASE_URL . "/index.php");
+            exit;
         }
+    }
 
         // Si llegó aquí, login incorrecto
         $_SESSION['error_message'] = "Usuario o contraseña incorrectos.";
