@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->store_result();
     if ($stmt->num_rows > 0) {
         $_SESSION['registro_message'] = "El email ya está registrado.";
-        header("Location: " . $_SERVER['HTTP_REFERER']);
+        header("Location: " . $_SERVER['HTTP_REFERER']);// redirige al usuario a la página anterior de donde vino
         exit;
     }
 
@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $persona = new Persona($nombre, $apellido, $edad, $dni, $telefono);
     if (!$persona->guardar($conn)) {
         $_SESSION['registro_message'] = "Error al registrar persona.";
-        header("Location: " . $_SERVER['HTTP_REFERER']);
+        header("Location: " . $_SERVER['HTTP_REFERER']);// redirige al usuario a la página anterior de donde vino
         exit;
     }
 
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $usuario = new Usuario($email, $clave, $persona->getId());
     if (!$usuario->guardar($conn)) {
         $_SESSION['registro_message'] = "Error al registrar usuario.";
-        header("Location: " . $_SERVER['HTTP_REFERER']);
+        header("Location: " . $_SERVER['HTTP_REFERER']);// redirige al usuario a la página anterior de donde vino
         exit;
     }
 
@@ -55,12 +55,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $empleado = new Empleado($rol, $persona->getId(), $usuario->getId());
     if (!$empleado->guardar($conn)) {
         $_SESSION['registro_message'] = "Error al registrar empleado.";
-        header("Location: " . $_SERVER['HTTP_REFERER']);
+        header("Location: " . $_SERVER['HTTP_REFERER']);// redirige al usuario a la página anterior de donde vino
         exit;
     }
-
+    // mensaje de exito
     $_SESSION['registro_message'] = "¡Registro exitoso! Ya puedes ingresar.";
-    header("Location: " . $_SERVER['HTTP_REFERER']);
+    header("Location: " . $_SERVER['HTTP_REFERER']);// redirige al usuario a la página anterior de donde vino
     exit;
 } else {
     header("Location: ../../index.php");

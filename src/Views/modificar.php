@@ -56,6 +56,13 @@ if ($id_empleado) {
 }
 // --- FIN AGREGADO ---
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<?php include_once(__DIR__ . "/src/Template/head.php"); ?>
+<body class="content">
+ 
+<?php include_once __DIR__ . '/../Template/navBar.php'; ?>
+
 <form method="post" action="<?php echo BASE_URL; ?>/src/Controllers/modificarEmpleado.php" class="d-grid bg-dark p-2 rounded">
     <input type="hidden" name="id_persona" value="<?php echo $empleado["id_persona"]; ?>">
     <input type="hidden" name="id_usuario" value="<?php echo $empleado["id_usuario"]; ?>">
@@ -76,4 +83,11 @@ if ($id_empleado) {
     <input type="text" name="telefono" value="<?php echo $empleado["telefono"]; ?>" class="mt-2 form-control">
     <button type="submit" name="modificar" class="mt-2 btn btn-primary form-control">Aceptar cambios</button>
 </form>
+    <?php
+  // Footer y modal de contactos
+  include_once __DIR__ . '/../Template/footer.php';
+  include_once __DIR__ . '/../Components/modalContactos.php';
+  ?>
+</body>
+</html>
 
