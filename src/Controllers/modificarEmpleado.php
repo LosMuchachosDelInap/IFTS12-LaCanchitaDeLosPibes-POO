@@ -25,10 +25,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['modificar'])) {
     if ($persona) {
         $persona->setNombre($nombre);
         $persona->setApellido($apellido);
+         $persona->setEdad($edad);
         $persona->setDni($dni);
         $persona->setTelefono($telefono);
         // Si tienes edad, agrega setEdad()
-        $persona->guardar($conn); // Debes tener un método para actualizar
+        $persona->actualizar($conn); 
     }
 
     // Actualizar usuario
@@ -38,14 +39,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['modificar'])) {
         if (!empty($clave)) {
             $usuario->setClave($clave); // Hashea internamente
         }
-        $usuario->guardar($conn); // Debes tener un método para actualizar
+        $usuario->actualizar($conn); 
     }
 
     // Actualizar empleado
     $empleado = Empleado::buscarPorId($conn, $idEmpleado);
     if ($empleado) {
         $empleado->setIdRol($idRol);
-        $empleado->guardar($conn); // Debes tener un método para actualizar
+        $empleado->actualizar($conn); 
     }
 
     header("Location: ../Views/listado.php");

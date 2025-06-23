@@ -15,7 +15,7 @@ error_reporting(E_ALL);
                         <h5 class="card-title text-center">Registrate</h5>
                     </div>
                     <div class="card-body">
-                        <form action="<?php echo BASE_URL; ?>/src/Controllers/registrarUsuario.php" method="post" class="row g-3">
+                        <form action="<?php echo BASE_URL; ?>/src/Controllers/registrarUsuario.php" method="post" class="row g-1">
                             <div>
                                 <label for="nombre" class="form-label">Nombre</label>
                                 <input type="text" class="form-control" id="nombre" name="nombre" required>
