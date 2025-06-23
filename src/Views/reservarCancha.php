@@ -48,10 +48,27 @@ $usuarioLogueado = $_SESSION['email'] ?? null;
 
     <?php include_once(__DIR__ . '/../Template/footer.php'); ?>
     <?php
-      include_once(__DIR__ . "/../Components/modalLoguin.php");
-      include_once(__DIR__ . "/../Components/modalRegistrar.php");
-      include_once(__DIR__ . "/../Components/modalContactos.php");
-      ?>
+    include_once(__DIR__ . "/../Components/modalLoguin.php");
+    include_once(__DIR__ . "/../Components/modalRegistrar.php");
+    include_once(__DIR__ . "/../Components/modalContactos.php");
+    ?>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Verifica si hay mensaje de registro exitoso
+            <?php if (isset($_SESSION['registro_message'])): ?>
+                // Espera 3 segundos, cierra el modal de registro y abre el de login
+                setTimeout(function() {
+                    var modalRegistrar = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalRegistrar'));
+                    modalRegistrar.hide();
+                    var modalLoguin = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalLoguin'));
+                    modalLoguin.show();
+                }, 3000);
+            <?php
+                unset($_SESSION['registro_message']); // Limpia el mensaje para no mostrarlo de nuevo
+            endif; ?>
+        });
+    </script>
 </body>
 
 </html>

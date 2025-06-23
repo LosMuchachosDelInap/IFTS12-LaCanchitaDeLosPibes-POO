@@ -32,6 +32,23 @@ $conn = $conectarDB->getConnection();
       include_once(__DIR__ . "/src/Components/modalRegistrar.php");
       include_once(__DIR__ . "/src/Components/modalContactos.php");
       ?>
+<!--al hacer click en registrar muestra el mensaje y espera 3 seg,luego se cierra y muyestra el loguin-->
+      <script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Verifica si hay mensaje de registro exitoso
+    <?php if (isset($_SESSION['registro_message'])): ?>
+        // Espera 3 segundos, cierra el modal de registro y abre el de login
+        setTimeout(function() {
+            var modalRegistrar = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalRegistrar'));
+            modalRegistrar.hide();
+            var modalLoguin = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalLoguin'));
+            modalLoguin.show();
+        }, 3000);
+    <?php 
+        unset($_SESSION['registro_message']); // Limpia el mensaje para no mostrarlo de nuevo
+    endif; ?>
+});
+</script>
 </body>
 
 </html>

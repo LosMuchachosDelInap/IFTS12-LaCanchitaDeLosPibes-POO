@@ -50,7 +50,7 @@ error_reporting(E_ALL);
                                 <strong><?= htmlspecialchars($_SESSION['registro_message'], ENT_QUOTES, 'UTF-8') ?></strong>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
-                            <?php unset($_SESSION['registro_message']); ?>
+                          
                         <?php endif; ?>
                     </div>
                 </div>
