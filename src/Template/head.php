@@ -18,6 +18,9 @@ if (!defined('BASE_URL')) {
  <!-- <link rel="stylesheet" href="<?php //echo '/src/Css/styles.css'; ?>">--> <!-- PARA USAR EN CASA-->
   <!--<link rel="stylesheet" href="<?php //echo '/Mis%20proyectos/IFTS12-LaCanchitaDeLosPibes/src/Css/styles.css'; ?>">--> <!--PARA USAR EN EL TRABAJO-->
   <link rel="stylesheet" href="<?php echo BASE_URL; ?>/src/Css/styles.css">
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   
   <title>La canchita de los pibes</title>

@@ -28,7 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['modificar'])) {
          $persona->setEdad($edad);
         $persona->setDni($dni);
         $persona->setTelefono($telefono);
-        // Si tienes edad, agrega setEdad()
         $persona->actualizar($conn); 
     }
 
