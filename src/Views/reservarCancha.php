@@ -173,7 +173,17 @@ while ($row = $result->fetch_assoc()) {
     include_once(__DIR__ . "/../Components/modalRegistrar.php");
     include_once(__DIR__ . "/../Components/modalContactos.php");
     ?>
+  <!-- Si hay un mensaje de error, muestra el modal de login-->
+      <?php if (isset($_SESSION['error_message'])): ?>
 
+            <script>
+                  document.addEventListener('DOMContentLoaded', function() {
+                        var modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalLoguin'));
+                        modal.show();
+                  });
+            </script>
+             <?php unset($_SESSION['error_message']); ?>
+      <?php endif; ?>
 </body>
 
 </html>
