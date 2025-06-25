@@ -1,7 +1,5 @@
 <?php
-
-
-
+// muestra los errores en el navegador ,soi los hay
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -41,4 +39,63 @@ function obtenerReservasSemana($conn, $id_cancha, $dias, $horarios) {
         $reservas[$row['id_fecha']][$row['id_horario']] = true;
     }
     return $reservas;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'reservar') {
+    if (!isset($_SESSION['id_usuario'])) {
+        echo "Debes estar logueado para reservar.";
+        exit;
+    }
+    if (empty($_POST['cancha'])) {
+        echo "Debes seleccionar una cancha.";
+        exit;
+    }
+
+    $id_usuario = $_SESSION['id_usuario'];
+    $id_cancha = intval($_POST['cancha']);
+    $fecha = $_POST['fecha'];
+    $horario = $_POST['horario'];
+   //$precio = floatval($_POST['precio']); // Ahora es el precio real, no un id
+
+    // Obtener o crear id_fecha
+    $stmt = $conn->prepare("SELECT id_fecha FROM fecha WHERE fecha = ?");
+    $stmt->bind_param("s", $fecha);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    if ($row) {
+        $id_fecha = $row['id_fecha'];
+    } else {
+        // Insertar la fecha si no existe
+        $stmt_insert = $conn->prepare("INSERT INTO fecha (fecha) VALUES (?)");
+        $stmt_insert->bind_param("s", $fecha);
+        if ($stmt_insert->execute()) {
+            $id_fecha = $conn->insert_id;
+        } else {
+            echo "Error al guardar la fecha";
+            exit;
+        }
+    }
+
+    // Obtener id_horario (igual que antes)
+    $stmt = $conn->prepare("SELECT id_horario FROM horario WHERE horario = ?");
+    $stmt->bind_param("s", $horario);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $id_horario = $row ? $row['id_horario'] : null;
+
+    if ($id_fecha && $id_horario) {
+        require_once __DIR__ . '/../Model/Reserva.php';
+        $reserva = new Reserva($id_usuario, $id_cancha, $id_fecha, $id_horario);
+        if ($reserva->guardar($conn)) {
+            echo "ok";
+        } else {
+            echo "Error al guardar la reserva";
+        }
+    } else {
+        echo "Fecha u horario inválido";
+    }
+    exit;
 }

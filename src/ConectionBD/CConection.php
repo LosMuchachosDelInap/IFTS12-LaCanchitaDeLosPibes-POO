@@ -36,9 +36,9 @@ class ConectionDB
         $this->conn->set_charset($this->charset);
 
         if ($this->conn->connect_error) {
-            echo "<script>console.error('Error de conexión: " . addslashes($this->conn->connect_error) . "');</script>";
-        } else {
-            echo "<script>console.log('Conexión exitosa a la base de datos');</script>";
+            echo "Error de conexión: " . addslashes($this->conn->connect_error) . "";
+        //} else {
+          //  echo "Conexión exitosa a la base de datos";
         }
     }
 
