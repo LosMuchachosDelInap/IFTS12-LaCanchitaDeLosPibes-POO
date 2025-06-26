@@ -50,8 +50,8 @@ if ($rol !== 'Administrador' && $rol !== 'Dueño') {
   <?php include_once __DIR__ . '/../Template/navBar.php'; ?>
 
   <div class="centrar">
-    <div class="mt-5 card col-10">
-      <h5 class="card-header">
+    <div class="mt-5 card col-10 bg-dark text-white border border-secondary">
+      <h5 class="card-header border border-secondary">
         <!-- Mensaje de Eliminar usuario con exito
          * Si hay un mensaje en la sesión, lo muestra
          * y luego lo desaparece solo
@@ -65,12 +65,12 @@ if ($rol !== 'Administrador' && $rol !== 'Dueño') {
         Usuario: <?php echo htmlspecialchars($_SESSION['email'], ENT_QUOTES, 'UTF-8'); ?> |
         Rol: <?php echo htmlspecialchars($_SESSION['nombre_rol'], ENT_QUOTES, 'UTF-8'); ?>
       </h5>
-      <div class="card-body">
+      <div class="card-body bg-dark">
         <div class="text-center">
-          <div class="row">
-            <div class="col-2">
+          <div class="row ">
+            <div class="col-2 ">
               <h5 class="alert alert-secondary text-bg-dark">Ingrese empleado</h5>
-              <form method="post" action="listado.php" class="d-grid bg-dark p-2 rounded" id="formCrearEmpleado">
+              <form method="post" action="listado.php" class="d-grid bg-dark p-2 rounded border border-secondary" id="formCrearEmpleado">
                 <!-- Mensaje de error -->
                 <?php if (isset($errorCampos) && $errorCampos): ?>
                   <div class="alert alert-danger py-1">Debe llenar todos los campos</div>
@@ -156,7 +156,7 @@ if ($rol !== 'Administrador' && $rol !== 'Dueño') {
               </form>
             </div>
             <div class="col-10">
-              <table class="table text-center">
+              <table class="table table-dark text-center">
                 <thead>
                   <tr class="table-dark rounded">
                     <th scope="col">#</th>
