@@ -184,7 +184,12 @@ if ($rol !== 'Administrador' && $rol !== 'Dueño') {
                       <td><?php echo $row["telefono"]; ?></td>
                       <td><?php echo $row["rol"]; ?></td>
                       <td>
-                        <a class="btn btn-primary" href="<?php echo BASE_URL; ?>/src/Views/modificar.php?id_empleado=<?php echo $row["id_empleado"]; ?>"><i class="bi bi-pencil-square"></i></a>
+                        <!--  <a class="btn btn-primary" href="<?php //echo BASE_URL;
+                                                                ?>/src/Views/modificar.php?id_empleado=<?php //echo $row["id_empleado"];
+                                                                                                        ?>"><i class="bi bi-pencil-square"></i></a>-->
+                        <!-- Botón para modificar empleado -->
+                        <button class="btn btn-primary" onclick="abrirModalModificar(<?php echo $row['id_empleado']; ?>)"><i class="bi bi-pencil-square"></i></button>
+                        <!-- Botón para eliminar empleado -->
                         <a class="btn btn-danger" href="<?php echo BASE_URL; ?>/src/Controllers/eliminarEmpleado.php?id_empleado=<?php echo $row["id_empleado"]; ?>"><i class="bi bi-trash3-fill"></i></a>
                       </td>
                     </tr>
@@ -202,6 +207,7 @@ if ($rol !== 'Administrador' && $rol !== 'Dueño') {
   // Footer y modal de contactos
   include_once __DIR__ . '/../Template/footer.php';
   include_once __DIR__ . '/../Components/modalContactos.php';
+  include_once(__DIR__ . '/../Components/modalModificarEmpleado.php');
   ?>
   <script>
     // Validación en el cliente para deshabilitar el botón si algún campo está vacío
@@ -222,6 +228,41 @@ if ($rol !== 'Administrador' && $rol !== 'Dueño') {
       }
       validarCampos();
     });
+  </script>
+
+  <!--Abre el modal modificar con los datos cargados del empleado a modificar-->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const mensajeFlash = document.getElementById('mensaje-flash');
+      if (mensajeFlash) {
+        setTimeout(() => {
+          mensajeFlash.style.display = 'none';
+        }, 3000);
+      }
+    });
+
+    function abrirModalModificar(id_empleado) {
+      document.getElementById('modalModificarEmpleadoBody').innerHTML = '<div class="text-center p-3">Cargando...</div>';
+      var modal = new bootstrap.Modal(document.getElementById('modalModificarEmpleado'));
+      modal.show();
+
+      fetch('modificar.php?id_empleado=' + id_empleado)
+        .then(response => response.text())
+        .then(html => {
+          var tempDiv = document.createElement('div');
+          tempDiv.innerHTML = html;
+          var form = tempDiv.querySelector('form');
+          if (form) {
+            document.getElementById('modalModificarEmpleadoBody').innerHTML = '';
+            document.getElementById('modalModificarEmpleadoBody').appendChild(form);
+          } else {
+            document.getElementById('modalModificarEmpleadoBody').innerHTML = '<div class="alert alert-danger">No se pudo cargar el formulario.</div>';
+          }
+        })
+        .catch(() => {
+          document.getElementById('modalModificarEmpleadoBody').innerHTML = '<div class="alert alert-danger">Error al cargar el formulario.</div>';
+        });
+    }
   </script>
 </body>
 

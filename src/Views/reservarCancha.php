@@ -143,12 +143,18 @@ while ($row = $result->fetch_assoc()) {
                         return;
                     }
                     if (confirm('¿Reservar el turno ' + info.startStr.replace('T', ' ') + '?')) {
+                        // Forzar formato HH:MM:SS
+                        var dateObj = info.start;
+                        var horas = String(dateObj.getHours()).padStart(2, '0');
+                        var minutos = String(dateObj.getMinutes()).padStart(2, '0');
+                        var segundos = '00';
+                        var horario = horas + ':' + minutos + ':' + segundos;
+
                         $.post('<?php echo BASE_URL; ?>/src/Controllers/reservarCanchaController.php', {
                             action: 'reservar',
                             cancha: <?php echo $id_cancha; ?>,
                             fecha: info.startStr.split('T')[0],
-                            horario: info.startStr.split('T')[1].substring(0,5) + ':00',
-
+                            horario: horario
                         }, function(response) {
                             if (response === 'ok') {
                                 alert('¡Reserva realizada!');
