@@ -57,4 +57,19 @@ class Empleado {
         $stmt->bind_param("i", $this->id_empleado);
         return $stmt->execute();
     }
+
+     public static function listarTodos($conn) {
+        $sql = "SELECT e.id_empleado, u.email, p.nombre, p.apellido, p.edad, p.dni, p.telefono, r.rol
+                FROM empleado e
+                JOIN usuario u ON e.id_usuario = u.id_usuario
+                JOIN persona p ON e.id_persona = p.id_persona
+                JOIN roles r ON e.id_rol = r.id_roles
+                ORDER BY e.id_empleado DESC";
+        $result = $conn->query($sql);
+        $empleados = [];
+        while ($row = $result->fetch_assoc()) {
+            $empleados[] = $row;
+        }
+        return $empleados;
+    }
 }

@@ -151,7 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                     // Opcional: puedes loguear el éxito
                 } catch (Exception $e) {
                     // Opcional: puedes loguear el error
-                    // error_log('Error al enviar mail: ' . $mail->ErrorInfo);
+                     error_log('Error al enviar mail: ' . $mail->ErrorInfo);
                 }
             }
             // --- Fin envío de mail ---
