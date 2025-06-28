@@ -5,6 +5,7 @@ use PHPMailer\PHPMailer\Exception;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../Model/Contacto.php';
+require_once __DIR__ . '/mail_config.php';
 
 use Dotenv\Dotenv;
 
@@ -108,13 +109,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
             // --- Envío de mail de confirmación con PHPMailer ---
 
-            // 1. Obtener email del usuario
-            $stmt = $conn->prepare("SELECT email FROM usuario WHERE id_usuario = ?");
+            // 1. Obtener email y datos del usuario
+            $stmt = $conn->prepare("SELECT u.email, p.nombre, p.apellido FROM usuario u 
+                                   JOIN persona p ON u.id_persona = p.id_persona 
+                                   WHERE u.id_usuario = ?");
             $stmt->bind_param("i", $id_usuario);
             $stmt->execute();
             $result = $stmt->get_result();
             $rowUser = $result->fetch_assoc();
             $emailUsuario = $rowUser ? $rowUser['email'] : '';
+            $nombreCompleto = $rowUser ? $rowUser['nombre'] . ' ' . $rowUser['apellido'] : 'Usuario';
 
             // 2. Obtener nombre de la cancha
             $stmt = $conn->prepare("SELECT nombreCancha FROM cancha WHERE id_cancha = ?");
@@ -122,37 +126,82 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             $stmt->execute();
             $result = $stmt->get_result();
             $rowCancha = $result->fetch_assoc();
-            $nombreCancha = $rowCancha ? $rowCancha['nombreCancha'] : '';
+            $nombreCancha = $rowCancha ? $rowCancha['nombreCancha'] : 'Cancha';
 
-            // 3. Enviar el mail solo si hay email
-            if ($emailUsuario) {
+            // 3. Log para debug
+            logMail("Intentando enviar correo a: $emailUsuario para reserva de $nombreCancha");
+
+            // 4. Enviar el mail solo si hay email válido
+            if ($emailUsuario && filter_var($emailUsuario, FILTER_VALIDATE_EMAIL)) {
+                logMail("Email válido, iniciando envío...");
                 $mail = new PHPMailer(true);
                 try {
-                    // Configuración SMTP (ajusta según tu proveedor)
+                    // Verificar que las variables de entorno existan
+                    if (empty($_ENV['MAIL_HOST']) || empty($_ENV['MAIL_USERNAME']) || empty($_ENV['MAIL_PASSWORD'])) {
+                        throw new Exception('Configuración de correo incompleta en .env');
+                    }
+                    
+                    logMail("Configuración de correo validada, configurando SMTP...");
+
+                    // Configuración SMTP
                     $mail->isSMTP();
                     $mail->Host       = $_ENV['MAIL_HOST'];
                     $mail->SMTPAuth   = $_ENV['MAIL_SMTPAuth'] === 'true';
                     $mail->Username   = $_ENV['MAIL_USERNAME'];
                     $mail->Password   = $_ENV['MAIL_PASSWORD'];
                     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                    $mail->Port       = $_ENV['MAIL_PORT'];
+                    $mail->Port       = intval($_ENV['MAIL_PORT']);
+                    
+                    // Configuración adicional para Gmail
+                    $mail->SMTPOptions = array(
+                        'ssl' => array(
+                            'verify_peer' => false,
+                            'verify_peer_name' => false,
+                            'allow_self_signed' => true
+                        )
+                    );
 
-                    $mail->setFrom('no-reply@lacanchitadelospibes.com', 'La Canchita de los Pibes');
-                    $mail->addAddress($emailUsuario);
+                    $mail->setFrom($_ENV['MAIL_USERNAME'], 'La Canchita de los Pibes');
+                    $mail->addAddress($emailUsuario, $nombreCompleto);
 
+                    $mail->isHTML(true);
                     $mail->Subject = 'Confirmación de Reserva - La Canchita de los Pibes';
-                    $mail->Body = "¡Hola!\n\nTu reserva fue realizada con éxito.\n\n"
-                        . "Cancha: $nombreCancha\n"
-                        . "Fecha: $fecha\n"
-                        . "Horario: $horario\n\n"
+                    $mail->Body = "
+                        <h3>¡Hola $nombreCompleto!</h3>
+                        <p>Tu reserva fue realizada con éxito.</p>
+                        <div style='background-color: #f8f9fa; padding: 15px; border-left: 4px solid #28a745; margin: 15px 0;'>
+                            <h4>Detalles de tu reserva:</h4>
+                            <ul>
+                                <li><strong>Cancha:</strong> $nombreCancha</li>
+                                <li><strong>Fecha:</strong> " . date('d/m/Y', strtotime($fecha)) . "</li>
+                                <li><strong>Horario:</strong> " . date('H:i', strtotime($horario)) . " hs</li>
+                            </ul>
+                        </div>
+                        <p>¡Te esperamos!<br><strong>La Canchita de los Pibes</strong></p>
+                        <hr>
+                        <small><em>Si tienes alguna consulta, no dudes en contactarnos.</em></small>
+                    ";
+
+                    // Versión texto plano como alternativa
+                    $mail->AltBody = "¡Hola $nombreCompleto!\n\n"
+                        . "Tu reserva fue realizada con éxito.\n\n"
+                        . "Detalles de tu reserva:\n"
+                        . "- Cancha: $nombreCancha\n"
+                        . "- Fecha: " . date('d/m/Y', strtotime($fecha)) . "\n"
+                        . "- Horario: " . date('H:i', strtotime($horario)) . " hs\n\n"
                         . "¡Te esperamos!\nLa Canchita de los Pibes";
 
+                    logMail("Enviando correo...");
                     $mail->send();
-                    // Opcional: puedes loguear el éxito
+                    logMail('Correo de confirmación enviado exitosamente a: ' . $emailUsuario);
+                    
                 } catch (Exception $e) {
-                    // Opcional: puedes loguear el error
-                     error_log('Error al enviar mail: ' . $mail->ErrorInfo);
+                    logMail('Error al enviar mail de confirmación: ' . $e->getMessage());
+                    logMail('PHPMailer ErrorInfo: ' . $mail->ErrorInfo);
+                    // No detener el proceso si falla el envío del correo
                 }
+            } else {
+                logMail('No se pudo enviar correo: email vacío o inválido (' . $emailUsuario . ')');
             }
             // --- Fin envío de mail ---
 
