@@ -5,7 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diagnóstico Sistema de Correos</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
+        body     <h3>🧪 Tests Adicionales:</h3>
+    <div style="margin: 15px 0;">
+        <a href="src/Test/test_mail_basico.php" target="_blank" style="background: #28a745; color: white; padding: 8px 12px; text-decoration: none; border-radius: 3px; margin-right: 10px;">
+            📧 Test Básico de Correo
+        </a>
+        <a href="src/Test/test_reserva_completa.php" target="_blank" style="background: #17a2b8; color: white; padding: 8px 12px; text-decoration: none; border-radius: 3px; margin-right: 10px;">
+            🏟️ Test Completo de Reserva
+        </a>
+        <a href="src/Test/verificar_bd.php" target="_blank" style="background: #ffc107; color: black; padding: 8px 12px; text-decoration: none; border-radius: 3px;">
+            🗄️ Verificar Base de Datos
+        </a>
+    </div>y: Arial, sans-serif; margin: 20px; }
         .success { color: green; font-weight: bold; }
         .error { color: red; font-weight: bold; }
         .warning { color: orange; font-weight: bold; }
