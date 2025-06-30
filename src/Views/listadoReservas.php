@@ -61,11 +61,52 @@ if ($rol !== 'Administrador' && $rol !== 'Dueño') {
             Rol: <?php echo htmlspecialchars($_SESSION['nombre_rol'], ENT_QUOTES, 'UTF-8'); ?>
             </h5>
             <div class="card-body bg-dark">
+                <!-- Filtros de fecha -->
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <form method="GET" class="d-flex align-items-end gap-3">
+                            <div class="form-group">
+                                <label for="fecha_desde" class="form-label text-white">Desde:</label>
+                                <input type="date" 
+                                       id="fecha_desde" 
+                                       name="fecha_desde" 
+                                       class="form-control" 
+                                       value="<?= $_GET['fecha_desde'] ?? '' ?>">
+                            </div>
+                            <div class="form-group">
+                                <label for="fecha_hasta" class="form-label text-white">Hasta:</label>
+                                <input type="date" 
+                                       id="fecha_hasta" 
+                                       name="fecha_hasta" 
+                                       class="form-control" 
+                                       value="<?= $_GET['fecha_hasta'] ?? '' ?>">
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">Filtrar</button>
+                                <a href="?" class="btn btn-secondary">Limpiar</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Contador de reservas -->
+                <div class="row mb-2">
+                    <div class="col-12">
+                        <p class="text-info">
+                            <strong>Total de reservas: <?= count($reservas) ?></strong>
+                            <?php if (isset($_GET['fecha_desde']) || isset($_GET['fecha_hasta'])): ?>
+                                (Filtradas)
+                            <?php endif; ?>
+                        </p>
+                    </div>
+                </div>
+                
                 <div class="text-center">
                     <table class="table table-dark text-center">
                         <thead>
                             <tr class="table-dark rounded">
                                 <th>Cancha</th>
+                                <th>Fecha</th>
                                 <th>Horario</th>
                                 <th>Precio</th>
                                 <th>Usuario</th>
@@ -78,7 +119,8 @@ if ($rol !== 'Administrador' && $rol !== 'Dueño') {
                                 <?php foreach ($reservas as $row): ?>
                                     <tr>
                                         <td><?= htmlspecialchars($row['nombreCancha']) ?></td>
-                                        <td><?= htmlspecialchars($row['horario']) ?></td>
+                                        <td><?= date('d/m/Y', strtotime($row['fecha'])) ?></td>
+                                        <td><?= date('H:i', strtotime($row['horario'])) ?> hs</td>
                                         <td>$<?= number_format($row['precio'], 0, ',', '.') ?></td>
                                         <td><?= htmlspecialchars($row['nombre'] . ' ' . $row['apellido']) ?></td>
                                         <td><?= htmlspecialchars($row['email']) ?></td>
@@ -87,7 +129,15 @@ if ($rol !== 'Administrador' && $rol !== 'Dueño') {
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="6">No hay reservas registradas.</td>
+                                    <td colspan="7" class="text-center py-4">
+                                        <i class="fas fa-calendar-times"></i>
+                                        No hay reservas registradas
+                                        <?php if (isset($_GET['fecha_desde']) || isset($_GET['fecha_hasta'])): ?>
+                                            para el período seleccionado.
+                                        <?php else: ?>
+                                            en el sistema.
+                                        <?php endif; ?>
+                                    </td>
                                 </tr>
                             <?php endif; ?>
                         </tbody>
