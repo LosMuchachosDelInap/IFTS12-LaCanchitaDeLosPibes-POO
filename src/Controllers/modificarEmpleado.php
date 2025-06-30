@@ -1,4 +1,16 @@
 <?php
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+if (!defined('BASE_URL')) {
+    $protocolo = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
+    $host = $_SERVER['HTTP_HOST'];
+    $carpeta = '';
+    define('BASE_URL', $protocolo . $host . $carpeta);
+}
+
 session_start();
 require_once __DIR__ . '/../Model/Empleado.php';
 require_once __DIR__ . '/../Model/Persona.php';
@@ -48,6 +60,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['modificar'])) {
         $empleado->actualizar($conn); 
     }
 
-    header("Location: ../Views/listado.php");
+  header('Location: ' . BASE_URL . '/src/Controllers/listadoEmpleadosController.php');
     exit;
 }

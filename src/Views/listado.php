@@ -155,14 +155,14 @@ if ($rol !== 'Administrador' && $rol !== 'Dueño') {
                 }, 3000);
             }
         });
-
+ const BASE_URL = "<?= BASE_URL ?>";
         // Abre el modal modificar con los datos cargados del empleado a modificar
         function abrirModalModificar(id_empleado) {
             document.getElementById('modalModificarEmpleadoBody').innerHTML = '<div class="text-center p-3">Cargando...</div>';
             var modal = new bootstrap.Modal(document.getElementById('modalModificarEmpleado'));
             modal.show();
 
-            fetch('modificar.php?id_empleado=' + id_empleado)
+            fetch(BASE_URL + '/src/Views/modificar.php?id_empleado=' + id_empleado)
                 .then(response => response.text())
                 .then(html => {
                     var tempDiv = document.createElement('div');
