@@ -25,6 +25,21 @@ $conn = $conectarDB->getConnection();
 // Llamo al archivo de las peticiones SQL
 require_once __DIR__ . '/../Model/peticionesSql.php';
 
+// Incluir el modelo de Reserva para obtener los datos
+require_once __DIR__ . '/../Model/Reserva.php';
+
+// Obtener filtros de fecha si existen
+$fecha_desde = $_GET['fecha_desde'] ?? null;
+$fecha_hasta = $_GET['fecha_hasta'] ?? null;
+
+// Obtener las reservas con filtros opcionales
+$reservas = Reserva::listarTodas($conn, $fecha_desde, $fecha_hasta);
+
+// Asegurar que $reservas sea siempre un array
+if (!is_array($reservas)) {
+    $reservas = [];
+}
+
 // Verifica si está logueado
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     header('Location: ' . BASE_URL . '/Views/noInicioSesion.php');
@@ -47,18 +62,20 @@ if ($rol !== 'Administrador' && $rol !== 'Dueño') {
     <?php include_once __DIR__ . '/../Template/navBar.php'; ?>
     <div class="centrar">
         <div class="mt-5 card col-10 bg-dark text-white border border-secondary">
-            <!-- Mensaje de Eliminar usuario con exito
-         * Si hay un mensaje en la sesión, lo muestra
-         * y luego lo desaparece solo
-         */-->
-            <?php if (isset($_SESSION['mensaje'])): ?>
-                <div class="alert alert-success" id="mensaje-flash">
-                    <?= htmlspecialchars($_SESSION['mensaje'], ENT_QUOTES, 'UTF-8'); ?>
-                </div>
-            <?php unset($_SESSION['mensaje']);
-            endif; ?>
-            Usuario: <?php echo htmlspecialchars($_SESSION['email'], ENT_QUOTES, 'UTF-8'); ?> |
-            Rol: <?php echo htmlspecialchars($_SESSION['nombre_rol'], ENT_QUOTES, 'UTF-8'); ?>
+            <h5 class="card-header border border-secondary">
+                <!-- Mensaje de Eliminar usuario con exito
+                * Si hay un mensaje en la sesión, lo muestra
+                * y luego lo desaparece solo
+                */-->
+                <?php if (isset($_SESSION['mensaje'])): ?>
+                    <div class="alert alert-success" id="mensaje-flash">
+                        <?= htmlspecialchars($_SESSION['mensaje'], ENT_QUOTES, 'UTF-8'); ?>
+                    </div>
+                    <?php unset($_SESSION['mensaje']); ?>
+                <?php endif; ?>
+                📋 Listado de Reservas |
+                Usuario: <?php echo htmlspecialchars($_SESSION['email'], ENT_QUOTES, 'UTF-8'); ?> |
+                Rol: <?php echo htmlspecialchars($_SESSION['nombre_rol'], ENT_QUOTES, 'UTF-8'); ?>
             </h5>
             <div class="card-body bg-dark">
                 <!-- Filtros de fecha -->
@@ -147,6 +164,18 @@ if ($rol !== 'Administrador' && $rol !== 'Dueño') {
         </div>
     </div>
     <?php include_once __DIR__ . '/../Template/footer.php'; ?>
+    
+    <script>
+        // Mensaje flash que desaparece
+        document.addEventListener('DOMContentLoaded', function() {
+            const mensajeFlash = document.getElementById('mensaje-flash');
+            if (mensajeFlash) {
+                setTimeout(() => {
+                    mensajeFlash.style.display = 'none';
+                }, 3000);
+            }
+        });
+    </script>
 </body>
 
 </html>

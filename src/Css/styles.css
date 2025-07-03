@@ -474,33 +474,105 @@ li {
   border: 1px solid #ddd;
 }
 
-/* Responsive para la vista de reservas */
+/* ========================================
+   ESTILOS PARA LA PÁGINA DE INICIO
+   ======================================== */
+
+/* Estilos para las tarjetas de características */
+.card .card-body .bg-success.bg-opacity-25,
+.card .card-body .bg-primary.bg-opacity-25,
+.card .card-body .bg-info.bg-opacity-25 {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card .card-body .bg-success.bg-opacity-25:hover,
+.card .card-body .bg-primary.bg-opacity-25:hover,
+.card .card-body .bg-info.bg-opacity-25:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilos para los iconos de características */
+.card .card-body .bi {
+  transition: transform 0.3s ease;
+}
+
+.card .card-body .bg-success.bg-opacity-25:hover .bi,
+.card .card-body .bg-primary.bg-opacity-25:hover .bi,
+.card .card-body .bg-info.bg-opacity-25:hover .bi {
+  transform: scale(1.1);
+}
+
+/* Estilos para los botones de la página de inicio */
+.card .card-body .btn {
+  transition: all 0.3s ease;
+  border-radius: 8px;
+}
+
+.card .card-body .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.card .card-body .btn-lg {
+  padding: 12px 24px;
+  font-weight: 600;
+}
+
+/* Estilos para las alertas informativas */
+.card .card-body .alert {
+  border-radius: 8px;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card .card-body .alert-info {
+  background-color: rgba(13, 202, 240, 0.1);
+  color: #0dcaf0;
+  border-left: 4px solid #0dcaf0;
+}
+
+.card .card-body .alert-warning {
+  background-color: rgba(255, 193, 7, 0.1);
+  color: #ffc107;
+  border-left: 4px solid #ffc107;
+}
+
+/* Responsive para la página de inicio */
 @media (max-width: 768px) {
-  .card .card-body .row {
-    flex-direction: column;
+  .card .card-body .row .col-6 {
+    margin-bottom: 15px;
   }
   
-  .card .card-body .col-2,
-  .card .card-body .col-10 {
-    flex: 0 0 100%;
-    max-width: 100%;
+  .card .card-body .d-grid .btn {
+    padding: 10px 20px;
+    font-size: 14px;
   }
   
-  .card .card-body .col-2 {
-    margin-bottom: 20px;
-  }
-  
-  .card .card-body #calendar {
-    height: calc(100vh - 450px);
-    max-height: 500px;
-    min-height: 350px;
+  .card .card-body .bg-success.bg-opacity-25,
+  .card .card-body .bg-primary.bg-opacity-25,
+  .card .card-body .bg-info.bg-opacity-25 {
+    margin-bottom: 15px;
   }
 }
 
 @media (max-width: 576px) {
-  .card .card-body #calendar {
-    height: calc(100vh - 400px);
-    min-height: 300px;
+  .card .card-body .lead {
+    font-size: 1rem;
+  }
+  
+  .card .card-body h3 {
+    font-size: 1.5rem;
+  }
+  
+  .card .card-body h4 {
+    font-size: 1.3rem;
+  }
+  
+  .card .card-body .row .col-6 {
+    flex: 0 0 100%;
+    max-width: 100%;
   }
 }
 
