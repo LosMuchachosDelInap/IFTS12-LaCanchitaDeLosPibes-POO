@@ -50,6 +50,11 @@ while ($row = $result->fetch_assoc()) {
     ];
 }
 ?>
+    <!--Chequea que alla usuario logueado, si lo esta,lo guarda en la variable-->
+    <script>
+        var usuarioLogueado = <?php echo isset($_SESSION['id_usuario']) ? 'true' : 'false'; ?>;
+    </script>
+    <!---------------------------------------------------------------------------------------------------->
 
 <!DOCTYPE html>
 <html lang="es">
@@ -63,57 +68,23 @@ while ($row = $result->fetch_assoc()) {
     <!---------------------------------------------------------------------------------------------------->
     <?php require_once __DIR__ . '/../Template/navBar.php'; ?>
     <div class="centrar">
-
-        <div class="row">
-            <div class="col-2">
-              
+        <div class="mt-5 card col-10 bg-dark text-white border border-secondary">
+            <h5 class="card-header border border-secondary">
                 <?php if (isset($_SESSION['reserva_ok'])): ?>
-                    <div class="alert alert-success"><?php echo $_SESSION['reserva_ok'];
-                                                        unset($_SESSION['reserva_ok']); ?></div>
+                    <div class="alert alert-success" id="mensaje-flash">
+                        <?= htmlspecialchars($_SESSION['reserva_ok'], ENT_QUOTES, 'UTF-8'); ?>
+                    </div>
+                    <?php unset($_SESSION['reserva_ok']); ?>
                 <?php endif; ?>
                 <?php if (isset($_SESSION['reserva_error'])): ?>
-                    <div class="alert alert-danger"><?php echo $_SESSION['reserva_error'];
-                                                    unset($_SESSION['reserva_error']); ?></div>
-                <?php endif; ?>
-                <!-- Seleccionar la cancha a reservar -->
-                <form method="get" class="mb-3 text-center">
-                    <label for="cancha">Seleccioná la cancha:</label>
-                    <select name="cancha" id="cancha" onchange="this.form.submit()" class="form-select d-inline-block w-auto">
-                        <?php foreach ($canchas as $cancha): ?>
-                            <option value="<?= $cancha['id_cancha'] ?>" <?= ($id_cancha == $cancha['id_cancha']) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($cancha['nombreCancha']) ?> - $<?= number_format($cancha['precio'], 0, ',', '.') ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </form>
-            </div>
-            <div class="col-10">
-
-
-
-
-                <!-- Configuración rápida de vista
-            <div class="row mb-3">
-                <div class="col-12 text-center">
-                    <div class="btn-group" role="group" aria-label="Vista del calendario">
-                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="changeCalendarView('dayGridMonth')">
-                            📅 Mes
-                        </button>
-                        <button type="button" class="btn btn-primary btn-sm" onclick="changeCalendarView('timeGridWeek')">
-                            📊 Semana
-                        </button>
-                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="changeCalendarView('timeGridDay')">
-                            📋 Día
-                        </button>
-                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="changeCalendarView('listWeek')">
-                            📝 Lista
-                        </button>
+                    <div class="alert alert-danger" id="mensaje-flash-error">
+                        <?= htmlspecialchars($_SESSION['reserva_error'], ENT_QUOTES, 'UTF-8'); ?>
                     </div>
-                </div>
-            </div>-->
-
+                    <?php unset($_SESSION['reserva_error']); ?>
+                <?php endif; ?>
+                📅 Calendario de Reservas
                 <?php
-                // La información de la cancha seleccionada ahora se muestra en el header de la tarjeta
+                // Obtener información de la cancha seleccionada
                 $canchaSeleccionada = null;
                 foreach ($canchas as $cancha) {
                     if ($cancha['id_cancha'] == $id_cancha) {
@@ -121,46 +92,81 @@ while ($row = $result->fetch_assoc()) {
                         break;
                     }
                 }
-                ?>
-
-                <!-- Contenedor del calendario con estructura de tarjeta -->
-                <div class="mt-5 card col-10 bg-dark text-white border border-secondary">
-                    <h5 class="card-header border border-secondary">
-                        📅 Calendario de Reservas
-                        <?php if ($canchaSeleccionada): ?>
-                            - <?= htmlspecialchars($canchaSeleccionada['nombreCancha']) ?>
-                            <span class="badge bg-success ms-2">$<?= number_format($canchaSeleccionada['precio'], 0, ',', '.') ?></span>
-                        <?php endif; ?>
-                    </h5>
-                    <div class="card-body bg-dark">
-                        <div id="calendar"></div>
+                if ($canchaSeleccionada): ?>
+                    - <?= htmlspecialchars($canchaSeleccionada['nombreCancha']) ?>
+                    <span class="badge bg-success ms-2">$<?= number_format($canchaSeleccionada['precio'], 0, ',', '.') ?></span>
+                <?php endif; ?>
+            </h5>
+            <div class="card-body bg-dark">
+                <div class="text-center">
+                    <div class="row">
+                        <!-- Formulario seleccionar cancha -->
+                        <div class="col-2">
+                            <h5 class="alert alert-secondary text-bg-dark">Seleccionar Cancha</h5>
+                            <form method="get" class="d-grid bg-dark p-2 rounded border border-secondary">
+                                <label for="cancha" class="form-label text-white mb-2">Cancha:</label>
+                                <select name="cancha" id="cancha" onchange="this.form.submit()" class="form-select mb-3">
+                                    <?php foreach ($canchas as $cancha): ?>
+                                        <option value="<?= $cancha['id_cancha'] ?>" <?= ($id_cancha == $cancha['id_cancha']) ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($cancha['nombreCancha']) ?> - $<?= number_format($cancha['precio'], 0, ',', '.') ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                                
+                                <!-- Botones de vista rápida -->
+                                <div class="mb-3">
+                                    <label class="form-label text-white mb-2">Vista:</label>
+                                    <div class="d-grid gap-2">
+                                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="changeCalendarView('dayGridMonth')">
+                                            📅 Mes
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-sm" onclick="changeCalendarView('timeGridWeek')">
+                                            📊 Semana
+                                        </button>
+                                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="changeCalendarView('timeGridDay')">
+                                            📋 Día
+                                        </button>
+                                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="changeCalendarView('listWeek')">
+                                            📝 Lista
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Leyenda -->
+                                <div class="mb-3">
+                                    <label class="form-label text-white mb-2">Leyenda:</label>
+                                    <div class="d-grid gap-1">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="legend-color" style="background:#4caf50; width: 15px; height: 15px; border-radius: 3px; display: inline-block;"></span>
+                                            <small class="text-white">Libre</small>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="legend-color" style="background:#ccc; width: 15px; height: 15px; border-radius: 3px; display: inline-block;"></span>
+                                            <small class="text-white">Reservado</small>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="legend-color" style="background:#2196F3; width: 15px; height: 15px; border-radius: 3px; display: inline-block;"></span>
+                                            <small class="text-white">Seleccionando</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Información adicional -->
+                                <div class="alert alert-info p-2">
+                                    <small>
+                                        💡 <strong>Tip:</strong> Haz clic y arrastra para seleccionar un horario de 1 hora
+                                    </small>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- Calendario -->
+                        <div class="col-10">
+                            <div id="calendar"></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Leyenda mejorada -->
-    <div class="mt-3 d-flex justify-content-center align-items-center gap-4">
-        <div class="legend-item">
-            <span class="legend-color" style="background:#4caf50;"></span>
-            <span>Libre</span>
-        </div>
-        <div class="legend-item">
-            <span class="legend-color" style="background:#ccc;"></span>
-            <span>Reservado</span>
-        </div>
-        <div class="legend-item">
-            <span class="legend-color" style="background:#2196F3;"></span>
-            <span>Seleccionando</span>
-        </div>
-    </div>
-
-    <!-- Información adicional -->
-    <div class="mt-3 text-center">
-        <small class="text-muted">
-            💡 <strong>Tip:</strong> Haz clic y arrastra para seleccionar un horario de 1 hora
-        </small>
-    </div>
     </div>
 
     <script>
@@ -313,7 +319,8 @@ while ($row = $result->fetch_assoc()) {
 
         // Función para actualizar los botones activos
         function updateViewButtons(currentView) {
-            document.querySelectorAll('.btn-group button').forEach(btn => {
+            // Usar selector más específico para los botones de vista
+            document.querySelectorAll('form .btn').forEach(btn => {
                 btn.classList.remove('btn-primary');
                 btn.classList.add('btn-outline-primary');
             });
@@ -327,13 +334,30 @@ while ($row = $result->fetch_assoc()) {
 
             const buttonIndex = viewMap[currentView];
             if (buttonIndex !== undefined) {
-                const buttons = document.querySelectorAll('.btn-group button');
+                const buttons = document.querySelectorAll('form .btn');
                 if (buttons[buttonIndex]) {
                     buttons[buttonIndex].classList.remove('btn-outline-primary');
                     buttons[buttonIndex].classList.add('btn-primary');
                 }
             }
         }
+
+        // Mensaje flash que desaparece (similar a listado.php)
+        document.addEventListener('DOMContentLoaded', function() {
+            const mensajeFlash = document.getElementById('mensaje-flash');
+            if (mensajeFlash) {
+                setTimeout(() => {
+                    mensajeFlash.style.display = 'none';
+                }, 3000);
+            }
+
+            const mensajeFlashError = document.getElementById('mensaje-flash-error');
+            if (mensajeFlashError) {
+                setTimeout(() => {
+                    mensajeFlashError.style.display = 'none';
+                }, 3000);
+            }
+        });
     </script>
     <?php
     include_once(__DIR__ . '/../Template/footer.php');
